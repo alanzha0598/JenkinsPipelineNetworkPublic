@@ -3,8 +3,8 @@ pipeline {
 
     parameters {
         string(name: 'WORKSPACE', defaultValue: 'development', description:'worspace to use in Terraform')
-        password (name: 'AWS_ACCESS_KEY_ID', defaultValue: 'AKIATQ2TQYVE5WMEMFK2')
-        password (name: 'AWS_SECRET_ACCESS_KEY', defaultValue: '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')
+        password (name: 'AWS_ACCESS_KEY_ID', defaultValue: 'AKIATQ2TQYVER4GXLZ4G')
+        password (name: 'AWS_SECRET_ACCESS_KEY', defaultValue: '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')
     }
     environment {
         TF_IN_AUTOMATION = "true"
