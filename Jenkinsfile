@@ -31,7 +31,7 @@ pipeline {
         }
         stage('NetworkPlan'){
             steps {
-                dir('$TF_PATH'){
+                dir('/var/lib/jenkins/workspace/JenkinsPipelineNetwork_main'){
                     script {
                         try {
                            sh "terraform workspace new ${params.WORKSPACE}"
