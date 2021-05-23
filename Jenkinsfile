@@ -14,13 +14,15 @@ pipeline {
     stages {
         stage('GitClone') {
           steps {
-            git url: 'https://github.com/alanzha0598/JenkinsPipelineNetworkPublic.git', branch: 'main'
-            sh "echo \$PWD"
+            dir('/var/lib/jenkins/workspace/6JenkinsPipelineNetworkGithub'){
+                git url: 'https://github.com/alanzha0598/JenkinsPipelineNetworkPublic.git', branch: 'main'
+                sh "echo \$PWD"
+            }                
           }
         }
         stage('NetworkInit'){
             steps {
-                dir('/var/lib/jenkins/workspace/JenkinsPipelineNetwork_main'){
+                dir('/var/lib/jenkins/workspace/6JenkinsPipelineNetworkGithub'){
                     sh 'terraform --version'
                     sh "terraform init -input=false --backend-config='access_key=$NETWORKING_ACCESS_KEY' --backend-config='secret_key=$NETWORKING_SECRET_KEY' "                    
                     sh "echo \$PWD"
@@ -30,7 +32,7 @@ pipeline {
         }
         stage('NetworkPlan'){
             steps {
-                dir('/var/lib/jenkins/workspace/JenkinsPipelineNetwork_main'){
+                dir('/var/lib/jenkins/workspace/6JenkinsPipelineNetworkGithub'){
                     script {
                         try {
                            sh "terraform workspace new ${params.WORKSPACE}"
@@ -52,13 +54,13 @@ pipeline {
                         apply = true
                     } catch (err) {
                         apply = false
-                        dir( '/var/lib/jenkins/workspace/JenkinsPipelineNetwork_main'){
+                        dir( '/var/lib/jenkins/workspace/6JenkinsPipelineNetworkGithub'){
                             sh "terraform destroy -force  -var 'aws_access_key=$NETWORKING_ACCESS_KEY' -var 'aws_secret_key=$NETWORKING_SECRET_KEY'"
                         }
                         currentBuild.result = 'UNSTABLE'
                     }
                     if(apply){
-                        dir('/var/lib/jenkins/workspace/JenkinsPipelineNetwork_main'){
+                        dir('/var/lib/jenkins/workspace/6JenkinsPipelineNetworkGithub'){
 
                             sh 'terraform apply -input=false terraform-networking.tfplan'
                         }
