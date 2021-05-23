@@ -10,6 +10,7 @@ pipeline {
         TF_IN_AUTOMATION = "true"
         NETWORKING_ACCESS_KEY = "${params.AWS_ACCESS_KEY_ID}"
         NETWORKING_SECRET_KEY = "${params.AWS_SECRET_ACCESS_KEY}"
+        TF_PATH = "/var/lib/jenkins/workspace/JenkinsPipelineNetwork_main"
     }
     stages {
         stage('GitClone') {
@@ -20,7 +21,7 @@ pipeline {
         }
         stage('NetworkInit'){
             steps {
-                dir('/home/ec2-user/project/6JenkinsPipelineNetwork'){
+                dir('$TF_PATH'){
                     sh 'terraform --version'
                     sh "terraform init -input=false --backend-config='access_key=$NETWORKING_ACCESS_KEY' --backend-config='secret_key=$NETWORKING_SECRET_KEY' "                    
                     sh "echo \$PWD"
@@ -30,7 +31,7 @@ pipeline {
         }
         stage('NetworkPlan'){
             steps {
-                dir('/home/ec2-user/project/6JenkinsPipelineNetwork'){
+                dir('$TF_PATH'){
                     script {
                         try {
                            sh "terraform workspace new ${params.WORKSPACE}"
@@ -52,13 +53,13 @@ pipeline {
                         apply = true
                     } catch (err) {
                         apply = false
-                        dir('/home/ec2-user/project/6JenkinsPipelineNetwork'){
+                        dir('$TF_PATH'){
                             sh "terraform destroy -force  -var 'aws_access_key=$NETWORKING_ACCESS_KEY' -var 'aws_secret_key=$NETWORKING_SECRET_KEY'"
                         }
                         currentBuild.result = 'UNSTABLE'
                     }
                     if(apply){
-                        dir('/home/ec2-user/project/6JenkinsPipelineNetwork'){
+                        dir('$TF_PATH'){
                             unstash "terraform-networking-plan"
                             sh 'terraform apply -input=false terraform-networking.tfplan'
                         }
