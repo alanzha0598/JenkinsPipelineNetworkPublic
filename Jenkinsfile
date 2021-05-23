@@ -10,7 +10,6 @@ pipeline {
         TF_IN_AUTOMATION = "true"
         NETWORKING_ACCESS_KEY = "${params.AWS_ACCESS_KEY_ID}"
         NETWORKING_SECRET_KEY = "${params.AWS_SECRET_ACCESS_KEY}"
-        TF_PATH = "/var/lib/jenkins/workspace/JenkinsPipelineNetwork_main"
     }
     stages {
         stage('GitClone') {
@@ -53,13 +52,13 @@ pipeline {
                         apply = true
                     } catch (err) {
                         apply = false
-                        dir('$TF_PATH'){
+                        dir( '/var/lib/jenkins/workspace/JenkinsPipelineNetwork_main'){
                             sh "terraform destroy -force  -var 'aws_access_key=$NETWORKING_ACCESS_KEY' -var 'aws_secret_key=$NETWORKING_SECRET_KEY'"
                         }
                         currentBuild.result = 'UNSTABLE'
                     }
                     if(apply){
-                        dir('$TF_PATH'){
+                        dir('/var/lib/jenkins/workspace/JenkinsPipelineNetwork_main'){
                             unstash "terraform-networking-plan"
                             sh 'terraform apply -input=false terraform-networking.tfplan'
                         }
