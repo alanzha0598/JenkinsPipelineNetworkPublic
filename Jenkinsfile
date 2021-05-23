@@ -17,7 +17,7 @@ pipeline {
             git url: 'https://github.com/alanzha0598/JenkinsPipelineNetworkPublic.git', branch: 'main'
             sh "echo \$PWD"
           }
-
+        }
         stage('NetworkInit'){
             steps {
                 dir('/home/ec2-user/project/6JenkinsPipelineNetwork'){
