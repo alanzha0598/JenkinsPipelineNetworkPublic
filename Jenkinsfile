@@ -21,7 +21,7 @@ pipeline {
         }
         stage('NetworkInit'){
             steps {
-                dir('$TF_PATH'){
+                dir('/var/lib/jenkins/workspace/JenkinsPipelineNetwork_main'){
                     sh 'terraform --version'
                     sh "terraform init -input=false --backend-config='access_key=$NETWORKING_ACCESS_KEY' --backend-config='secret_key=$NETWORKING_SECRET_KEY' "                    
                     sh "echo \$PWD"
