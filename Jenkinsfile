@@ -38,7 +38,7 @@ pipeline {
                             sh "terraform workspace select ${params.WORKSPACE}"
                         }
                         sh "terraform plan -input=false -out terraform-networking.tfplan -var 'aws_access_key=$NETWORKING_ACCESS_KEY' -var 'aws_secret_key=$NETWORKING_SECRET_KEY';echo \$? > status"
-                        stash name: "terraform-networking-plan", includes: "terraform-networking.tfplan"
+
                     }
                 }
             }
@@ -59,7 +59,7 @@ pipeline {
                     }
                     if(apply){
                         dir('/var/lib/jenkins/workspace/JenkinsPipelineNetwork_main'){
-                            unstash "terraform-networking-plan"
+
                             sh 'terraform apply -input=false terraform-networking.tfplan'
                         }
                     }
